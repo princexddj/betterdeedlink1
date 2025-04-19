@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Link Gateway</title>
+    <style>
+        :root {
+            --primary-color: #9c27b0;
+            --secondary-color: #7b1fa2;
+            --bg-color: #000;
+            --text-color: #fff;
+            --container-bg: #111;
+            --premium-color: #ff9800;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: var(--container-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--primary-color);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .ad-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .ad-placeholder {
+            background-color: #222;
+            color: #666;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .link-display {
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .countdown {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        
+        .generated-link {
+            color: var(--premium-color);
+            font-size: 16px;
+            word-break: break-all;
+            padding: 15px;
+            margin: 15px 0;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+            border: 1px solid #333;
+        }
+        
+        .open-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 15px 0;
+            cursor: pointer;
+            width: 100%;
+            max-width: 200px;
+        }
+        
+        .status {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        
+        /* Responsive ads */
+        .ad-leaderboard {
+            width: 100%;
+            min-height: 100px;
+        }
+        
+        .ad-medium {
+            width: 100%;
+            min-height: 250px;
+        }
+        
+        .ad-video {
+            width: 100%;
+            min-height: 180px;
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                max-width: 750px;
+                padding: 30px;
+            }
+            
+            .ad-leaderboard {
+                min-height: 90px;
+            }
+            
+            .ad-medium {
+                min-height: 250px;
+            }
+            
+            .ad-video {
+                min-height: 360px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mobile Link Gateway</h1>
+        
+        <!-- Ad Space 1 (Leaderboard) -->
+        <div class="ad-container">
+            <div class="ad-placeholder ad-leaderboard">
+                Mobile Ad Space (320x100)
+            </div>
+        </div>
+        
+        <!-- Ad Space 2 (Medium Rectangle) -->
+        <div class="ad-container">
+            <div class="ad-placeholder ad-medium">
+                Mobile Ad Space (300x250)
+            </div>
+        </div>
+        
+        <!-- Video Ad Space -->
+        <div class="ad-container">
+            <div class="ad-placeholder ad-video">
+                Video Ad Space (16:9)
+            </div>
+        </div>
+        
+        <!-- Link Display Area -->
+        <div class="link-display">
+            <div class="countdown" id="countdown">5</div>
+            <p>Your secure link is generating...</p>
+            <div class="generated-link" id="generated-link">
+                Please wait while we verify your access
+            </div>
+            <button class="open-btn" id="open-btn" style="display:none;">Open Link</button>
+            <div class="status" id="status">
+                Device: Mobile | Source: Direct
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const countdownEl = document.getElementById('countdown');
+            const generatedLinkEl = document.getElementById('generated-link');
+            const openBtn = document.getElementById('open-btn');
+            const statusEl = document.getElementById('status');
+            
+            // Detect mobile device
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Get source from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const source = urlParams.get('source') || (document.referrer || 'direct').replace('www.', '').split('/')[2] || 'direct';
+            
+            // Set final URL (change this to your destination)
+            const finalUrl = "https://example.com/your-destination";
+            
+            // Update status
+            statusEl.textContent = `Device: ${isMobile ? 'Mobile' : 'Desktop'} | Source: ${source}`;
+            
+            // Countdown timer
+            let seconds = 5;
+            const timer = setInterval(function() {
+                seconds--;
+                countdownEl.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    showFinalLink();
+                }
+            }, 1000);
+            
+            function showFinalLink() {
+                generatedLinkEl.innerHTML = finalUrl;
+                openBtn.style.display = 'inline-block';
+                openBtn.onclick = function() {
+                    window.open(finalUrl, '_blank');
+                };
+                
+                // Optional: Auto-redirect after delay
+                // setTimeout(function() {
+                //     window.location.href = finalUrl;
+                // }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
